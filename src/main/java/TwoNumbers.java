@@ -5,8 +5,8 @@ public class TwoNumbers {
     public static void main(String[] args) {
         Solution1 solution1 = new Solution1();
         int[] r = new int[2];
-        int[] input = {2, 7, 11, 15};
-        int target = 9;
+        int[] input = {3, 2, 4};
+        int target = 6;
         r = solution1.twoSum(input, target);
         System.out.println(r[0] + " " + r[1]);
     }
@@ -17,7 +17,7 @@ class Solution1 {
         int[] result = new int[2];
 
         Map<Integer, Integer> map = new HashMap<>();
-        for (int i = 0; i < nums.length - 1; i++) {
+        for (int i = 0; i < nums.length; i++) {
             /* 
             * 方法一：暴力破解
             for (int j = i + 1; j < nums.length; j++) {
