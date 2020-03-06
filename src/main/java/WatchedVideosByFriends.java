@@ -21,18 +21,19 @@ import java.util.stream.Collectors;
 public class WatchedVideosByFriends {
   public static void main(String[] args) {
     Solution1311 testCase = new Solution1311();
-    List<List<String>> watchedVideos = new ArrayList<List<String>>();
-    List<String> s1 = Arrays.asList("bjwtssmu");
-    List<String> s2 = Arrays.asList("aygr", "mqls");
-    List<String> s3 = Arrays.asList("vrtxa", "zxqzeqy", "nbpl", "qnpl");
-    List<String> s4 = Arrays.asList("r", "otazhu", "rsf");
-    List<String> s5 = Arrays.asList("bvcca", "ayyihidz", "ljc", "fiq", "viu");
 
-    watchedVideos = Arrays.asList(s1, s2, s3, s4, s5);
+    List<String> s1 = Arrays.asList("hkpv","hwnkrtxu","uhbcy","fqyzgj");
+    List<String> s2 = Arrays.asList("fwwxot","dt","feingsx");
+    List<String> s3 = Arrays.asList("vmwulmqf");
+    List<String> s4 = Arrays.asList("zi");
+//    List<String> s5 = Arrays.asList("bvcca", "ayyihidz", "ljc", "fiq", "viu");
 
-    int[][] friends = {{3,2,1,4},{0,4},{4,0},{0,4},{2,3,1,0}};
-    int id = 3;
-    int level = 1;
+
+    List<List<String>> watchedVideos = Arrays.asList(s1, s2, s3, s4);
+
+    int[][] friends = {{2,3},{3,2},{0,1},{1,0}};
+    int id = 0;
+    int level = 2;
     List<String> result = testCase.watchedVideosByFriends(watchedVideos, friends, id, level);
     System.out.println(result.toString());
   }
@@ -40,13 +41,9 @@ public class WatchedVideosByFriends {
 
 class Solution1311 {
   public List<String> watchedVideosByFriends(List<List<String>> watchedVideos, int[][] friends, int id, int level) {
-    Queue<Integer> queue = new PriorityQueue<>();   // 使用队列存放找到的level为入参的朋友
-    queue.add(id);  // 从当前（id号选手）开始寻找朋友关系，直到第level层
-//    Boolean[] visited = new Boolean[friends.length];  // bool数组记录是否访问过
-    boolean[] visited = new boolean[friends.length];
-//    for (Boolean b: visited) {
-//      b = false;
-//    }
+    Queue<Integer> queue = new LinkedList<>();   // 使用队列存放找到的level为入参的朋友
+    queue.offer(id);  // 从当前（id号选手）开始寻找朋友关系，直到第level层
+    boolean[] visited = new boolean[friends.length];    // bool数组记录是否访问过
     visited[id] = true;
 
     /*
@@ -54,48 +51,32 @@ class Solution1311 {
     * 将朋友依次放入队列中，通过friends数组，
     * 依次把朋友的朋友找到，一直到第level层
      */
-    for (int i = 1; i <= level; i++) {
+    for (int i = 0; i < level; i++) {
       int s = queue.size();
       for (int j = 0; j < s; j++) {
-//        Integer item = queue.peek();
         Integer item = queue.poll();
         for (int each: friends[item]) {
           if (!visited[each]) {
-            queue.add(each);
+            queue.offer(each);
             visited[each] = true;
           }
         }
-//        Integer item = queue.poll();
-//        int[] pyq = friends[item];
-//        for (int k = 0; k < pyq.length; k++) {
-//          visited[k] = true;
-//        }
       }
     }
 
     Map<String, Integer> freq = new HashMap<>();
-//    List<String> s1 = watchedVideos.get(0);
-//    String s2 = watchedVideos.get(0).get(0);
-    int count = 1;
+
     for (Integer item: queue) {
-//      Integer person = queue.poll();
       List<String> videos = watchedVideos.get(item);
-//      for (String video: watchedVideos.get(item)) {
-//
-//      }
       for (String video: videos) {
         freq.put(video, (freq.containsKey(video)) ? freq.get(video)+1 : 1);
       }
     }
 
-    ArrayList<Map.Entry<String, Integer>> arrayList = new ArrayList<Map.Entry<String, Integer>>(freq.entrySet());
-    Collections.sort(arrayList, new Comparator<Map.Entry<String, Integer>>() {
-      @Override public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-        return (o2.getValue() - o1.getValue());
-      }
-    });
+    ArrayList<Map.Entry<String, Integer>> freqList = new ArrayList<Map.Entry<String, Integer>>(freq.entrySet());
+    Collections.sort(freqList, (o1, o2) -> (o2.getValue() - o1.getValue()));
 
-    Map<String, Integer> sorted = arrayList
+    Map<String, Integer> sorted = freqList
         .stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     List<String> result = new ArrayList<>();
